@@ -1,35 +1,43 @@
 
 import './App.css'
-// import Navbar from './components/Navbar'
-// import CalendarComponent from './pages/Calendar'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Reservations from './pages/Reservations';
-import Home from './pages/Home'
-import { useEffect } from 'react';
+import Auth from './pages/Auth'
+import Dashboard from './pages/Dashboard'
+// import { useContext, useEffect, useState } from 'react';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import ErrorPage from './pages/ErrorPage';
+// import { UserContext } from './context/ContextCreate';
+import.meta.env.BASE_URL
 
-async function Test(){
-  const dataRes = await fetch("localhost:3000/users",{
+// ENV
+const VITE_CLIENT_ID = import.meta.env.VITE_CLIENT_ID
 
-  })
-  const data = await dataRes
-  console.log(data)
-}
-
-
+// Context
+// const UserContext()
 function App() {
-  useEffect(()=>{
-    Test
-  })
+  // const navigate = useNavigate()
+  function PrivateRoute(){
+    return(
+      <>
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="dashboard/reservations" element={<Reservations />} />
+      </>
+    )
+  }
   return (
     <>
-    <BrowserRouter>
-      <Routes>
-            <Route path="/" element={<Home />}></Route>
-            <Route path="reservations" element={<Reservations />} />
+    
+      <BrowserRouter>
+        <GoogleOAuthProvider clientId={VITE_CLIENT_ID}>
+        <Routes>
+          <Route path="/" element={<Auth />}></Route>
+          <Route path="*" element={<ErrorPage />} />
+          <Route path="dashboard" element={<PrivateRoute />}></Route>
         </Routes>
-    </BrowserRouter>
-      
-
+        </GoogleOAuthProvider>
+      </BrowserRouter>
+    
     </>
   )
 }
