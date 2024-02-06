@@ -31,9 +31,9 @@ function App() {
       <BrowserRouter>
         <GoogleOAuthProvider clientId={VITE_CLIENT_ID}>
         <Routes>
-          <Route path="/" element={<Auth />}></Route>
+          <Route path="/" element={<Dashboard />}></Route>
           <Route path="*" element={<ErrorPage />} />
-          <Route path="dashboard" element={<PrivateRoute />}></Route>
+          <Route path="dashboard" element={<Dashboard />}></Route>
         </Routes>
         </GoogleOAuthProvider>
       </BrowserRouter>
