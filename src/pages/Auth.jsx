@@ -1,31 +1,41 @@
 import { GoogleLogin } from '@react-oauth/google';
-import { useGoogleOneTapLogin } from '@react-oauth/google';
-
-
+import { UserContext } from '../helper/Context';
+import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Auth(){
-    useGoogleOneTapLogin({
-        onSuccess: credentialResponse => {
-          console.log(credentialResponse);
-        },
-        onError: () => {
-          console.log('Login Failed');
-        },
-      });
+  const {setUser, setIsAuthenticated} = useContext(UserContext)
+  const [background,setBackground] = useState(null)
+  const navigate = useNavigate()
+
+  useEffect(()=>{
+    setBackground("/img/bckgrnd.jpg")
+  },[])
+
+  function GoogleAuth(){
     return(
-        <>
-            <GoogleLogin
+      <GoogleLogin
                 onSuccess={credentialResponse => {
-                    console.log(credentialResponse);
+                    const user = credentialResponse;
+                    console.log(user)
+                    setUser(credentialResponse)
+                    setIsAuthenticated(true)
+                    sessionStorage.setItem("bookingApp",JSON.stringify(user))
+                    navigate("/dashboard")
+                    
                 }}
                 onError={() => {
                     console.log('Login Failed');
                 }}
                 useOneTap
                 />
-        </>
-        
     )
-    
+  }
+
+  return(
+      <>
+                  <GoogleAuth/>
+      </>
+  )
 }
 export default Auth
