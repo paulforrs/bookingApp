@@ -1,53 +1,149 @@
 import { redirect } from "react-router-dom";
 import NavbarComponent from "../components/NavbarComponent"
-import Reservations from "./Reservations";
-import { useEffect, useState } from "react";
+import Reservations from "./reservations/Reservations";
+import { useContext, useEffect, useState } from "react";
 import ReservationDetail from "../components/ReservationDetail";
+import ReservationOverlay from "../components/ReservationOverlay";
+import { ReservationContext } from "../helper/ReservationContex";
 
+const VITE_API_END_POINT = import.meta.env.VITE_API_END_POINT
+const VITE_GOOGLE_KEY = import.meta.env.VITE_GOOGLE_KEY
 // import { GoogleLogin } from '@react-oauth/google';
+function Dashboard(props){
+    const {reservations} = props
+    const [reservationDetail,setReservationDetail] = useState({})
+    const [reservationIndex, setReservationIndex] = useState()
+    const [showReservation, setShowReservation] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
+    // const {reservations, setReservations} = useContext(ReservationContext)
 
-function Dashboard(){
-    const [reservations,setReservations] = useState([])
-
-    async function getReservations(){
-        try{
-            const reservationRes = await fetch("https://booking-api-ywo5.onrender.com/api/reservations",{
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-               },
-            })
-            const body = await reservationRes.json()
-            console.log(body)
-            setReservations(body)
-        }
-        catch(err){
-            console.log(err)
-        }
+    async function fetchGoogleHoliday(){
+        const googleHolidayResponse = await fetch(`https://www.googleapis.com/calendar/v3/calendars/en.philippines%23holiday%40group.v.calendar.google.com/events?key=${VITE_GOOGLE_KEY}`)
+        const body = await googleHolidayResponse.json()
+        console.log(body)
     }
-    function reservationArr(){
-        reservations.map((reservation)=>{
-            console.log(reservation._id)
-            return (<ReservationDetail reservation={reservation} key={reservation._id}></ReservationDetail>)
-        })
-}
-
-    useEffect(()=>{
-        getReservations()
+    function reservationArr(reservations){
+        return(
+            reservations.map((reservation, index)=>{
+                return (
+                <ReservationDetail
+                    reservation={reservation}
+                    key={index}
+                    setReservationDetail = {setReservationDetail}
+                    >
+                </ReservationDetail>)
+            })
+        )
         
-    },[])
+    }
+    function PlaceHolder(){
+        return(
+            <>
+            <div className="card" aria-hidden="true">
+                <div className="card-body">
+                    <h5 className="card-title placeholder-glow">
+                    <span className="placeholder col-6"></span>
+                    </h5>
+                    <p className="card-text placeholder-glow">
+                    <span className="placeholder col-7"></span>
+                    <span className="placeholder col-4"></span>
+                    <span className="placeholder col-4"></span>
+                    <span className="placeholder col-6"></span>
+                    <span className="placeholder col-8"></span>
+                    </p>
+                </div>
+            </div>
+            <div className="card" aria-hidden="true">
+                <div className="card-body">
+                    <h5 className="card-title placeholder-glow">
+                    <span className="placeholder col-6"></span>
+                    </h5>
+                    <p className="card-text placeholder-glow">
+                    <span className="placeholder col-7"></span>
+                    <span className="placeholder col-4"></span>
+                    <span className="placeholder col-4"></span>
+                    <span className="placeholder col-6"></span>
+                    <span className="placeholder col-8"></span>
+                    </p>
+                </div>
+            </div>
+            <div className="card" aria-hidden="true">
+                <div className="card-body">
+                    <h5 className="card-title placeholder-glow">
+                    <span className="placeholder col-6"></span>
+                    </h5>
+                    <p className="card-text placeholder-glow">
+                    <span className="placeholder col-7"></span>
+                    <span className="placeholder col-4"></span>
+                    <span className="placeholder col-4"></span>
+                    <span className="placeholder col-6"></span>
+                    <span className="placeholder col-8"></span>
+                    </p>
+                </div>
+            </div>
+            <div className="card" aria-hidden="true">
+                <div className="card-body">
+                    <h5 className="card-title placeholder-glow">
+                    <span className="placeholder col-6"></span>
+                    </h5>
+                    <p className="card-text placeholder-glow">
+                    <span className="placeholder col-7"></span>
+                    <span className="placeholder col-4"></span>
+                    <span className="placeholder col-4"></span>
+                    <span className="placeholder col-6"></span>
+                    <span className="placeholder col-8"></span>
+                    </p>
+                </div>
+            </div>
+            <div className="card" aria-hidden="true">
+                <div className="card-body">
+                    <h5 className="card-title placeholder-glow">
+                    <span className="placeholder col-6"></span>
+                    </h5>
+                    <p className="card-text placeholder-glow">
+                    <span className="placeholder col-7"></span>
+                    <span className="placeholder col-4"></span>
+                    <span className="placeholder col-4"></span>
+                    <span className="placeholder col-6"></span>
+                    <span className="placeholder col-8"></span>
+                    </p>
+                </div>
+            </div>
+            </>
+        )
+    }
     useEffect(()=>{
-        reservationArr()
+        console.log(isLoading)
+        if(reservations.length == 0){
+            setIsLoading(true)
+        }else{
+            setIsLoading(false)
+        }
     },[reservations])
+    useEffect(()=>{
+        fetchGoogleHoliday()
+    },[])
 
+    if(isLoading){
+        return(
+            <>
+                <NavbarComponent></NavbarComponent>
+                <PlaceHolder/>
+            </>
+        )
+    }
     return(
         <>
             <NavbarComponent></NavbarComponent>
-            <h1>Your reservation</h1>
-            {reservations.map((reservation)=>{
-   
-            return (<ReservationDetail reservation={reservation} key={reservation._id}></ReservationDetail>)
-            })}
+            <div className="container-fluid">
+                <h1>Your reservation</h1>
+                
+                {reservationArr(reservations)}
+
+                {!showReservation && <ReservationOverlay reservationDetail={reservationDetail}></ReservationOverlay>}
+                
+            </div>
+            
         </>
     )
 }

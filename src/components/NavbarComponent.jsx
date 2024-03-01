@@ -34,8 +34,8 @@ function NavbarComponent(){
               <li className="nav-item">
                 <a className="nav-link active" aria-current="page" onClick={()=>navigate('/dashboard')}>Home</a>
               </li>
-              <li className="nav-item">
-                <a className="nav-link disabled" >Calendar</a>
+              <li className="nav-item" onClick={()=>navigate('/calendar')}>
+                <a className="nav-link" >Calendar</a>
               </li>
               <li className="nav-item dropdown">
                 <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -43,7 +43,7 @@ function NavbarComponent(){
                 </a>
                 <ul className="dropdown-menu">
                   <li><a className="dropdown-item" onClick={()=>navigate('/reservations')}>Reservations</a></li>
-                  <li><a className="dropdown-item disabled" href="#">Add new</a></li>
+                  <li><a className="dropdown-item" onClick={()=>navigate('/reservations/new')}>Add new</a></li>
                   <li><hr className="dropdown-divider"/></li>
                   <li><a className="dropdown-item disabled" href="#">Something else here</a></li>
                 </ul>
@@ -52,10 +52,7 @@ function NavbarComponent(){
                 <a className="nav-link disabled" aria-disabled="true">Disabled</a>
               </li>
             </ul>
-            <form className="d-flex" role="search">
-              <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-              <button className="btn btn-outline-success" type="submit">Search</button>
-            </form>
+              <button className="btn btn-outline-danger" onClick={logOut}>Log Out</button>
           </div>
         </div>
       </nav>
